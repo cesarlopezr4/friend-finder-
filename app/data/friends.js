@@ -23,7 +23,7 @@ var friends = [
             name: 'Steve Ray Vaugh',
             photo: 'https://www.pexels.com/photo/adult-blur-camera-casual-598917/',
             scores: [1, 2, 5, 3, 5, 5, 4, 5, 2, 4]
-        }];
+        }
 
 ];
 

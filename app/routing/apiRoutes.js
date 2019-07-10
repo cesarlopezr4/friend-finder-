@@ -1,16 +1,17 @@
-// ===============================================================================
-// LOAD DATA
-// We are linking our routes to a series of "data" sources.
-// These data sources hold arrays of information on all possible friends
-// ===============================================================================
 
+// ===============================================================================
+// DEPENDENCIES
+// We need to include the path package to get the correct file path for our html
+// ===============================================================================
+var express = require("express");
+var path = require("path");
 // ===============================================================================
 // LOAD DATA
 // We are linking our routes to a series of "data" sources.
 // These data sources hold arrays of information on table-data, waitinglist, etc.
 // ===============================================================================
 
-var tableData = require("../api/friends");
+var tableData = require("../data/friends");
 
 
 
@@ -39,7 +40,7 @@ module.exports = function(app) {
   // ---------------------------------------------------------------------------
 
   app.get('/api/friends', function(req, res){
-		res.json(friendList);
+		res.json(tableData);
 	});
 
 //==============================================
@@ -55,9 +56,9 @@ module.exports = function(app) {
   // ...the JSON is pushed to the appropriate JavaScript array
   // ---------------------------------------------------------------------------
 
-	app.post('/api/friends', function(req, res){
-		friendList.push(req.body);
-	});
+	// app.post('/api/friends', function(req, res){
+	// 	friendList.push(req.body);
+	// });
 
 
     // Note the code here. Our "server" will respond to a user"s survey result
@@ -104,7 +105,7 @@ module.exports = function(app) {
       // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
       // It will do this by sending out the value "true" have a table
       // req.body is available since we're using the body parsing middleware
-     
+        console.log(req.body)
         tableData.push(req.body);
         res.json(true);
       

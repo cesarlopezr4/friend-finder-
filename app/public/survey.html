@@ -33,7 +33,7 @@
 
     <hr>
 
-    <h3><strong>Question 1</strong></h3>
+    <h3><strong> Would you like to go to the Opera?</strong></h3>
     <!-- <h4>Your question here</h4> -->
     <select class="chosen-select" id="q1">
       <option value=""></option>
@@ -44,7 +44,7 @@
       <option value="5">5 (Strongly Agree)</option>
     </select>
 
-    <h3><strong>Question 2</strong></h3>
+    <h3><strong>The living near the seaside is a good choice?</strong></h3>
     <!-- <h4>Your question here</h4> -->
     <select class="chosen-select" id="q2">
       <option value=""></option>
@@ -56,7 +56,7 @@
     </select>
 
 
-    <h3><strong>Question 3</strong></h3>
+    <h3><strong>Would you enjoy Seafood?</strong></h3>
     <!-- <h4>Your question here</h4> -->
     <select class="chosen-select" id="q3">
       <option value=""></option>
@@ -68,7 +68,7 @@
     </select>
 
 
-    <h3><strong>Question 4</strong></h3>
+    <h3><strong> !I think traveling is one of the more delighful pleasures in life!</strong></h3>
     <!-- <h4>Your question here</h4> -->
     <select class="chosen-select" id="q4">
       <option value=""></option>
@@ -80,7 +80,7 @@
     </select>
 
 
-    <h3><strong>Question 5</strong></h3>
+    <h3><strong>Would you like to run 10 miles a day?</strong></h3>
     <!-- <h4>Your question here</h4> -->
     <select class="chosen-select" id="q5">
       <option value=""></option>
@@ -92,7 +92,7 @@
     </select>
 
 
-    <h3><strong>Question 6</strong></h3>
+    <h3><strong> I'm enjoy to read a very good book!</strong></h3>
     <!-- <h4>Your question here</h4> -->
     <select class="chosen-select" id="q6">
       <option value=""></option>
@@ -104,7 +104,7 @@
     </select>
 
 
-    <h3><strong>Question 7</strong></h3>
+    <h3><strong>I know, it's only rock&roll that I liked, don't you ?</strong></h3>
     <!-- <h4>Your question here</h4> -->
     <select class="chosen-select" id="q7">
       <option value=""></option>
@@ -115,7 +115,7 @@
       <option value="5">5 (Strongly Agree)</option>
     </select>
 
-    <h3><strong>Question 8</strong></h3>
+    <h3><strong> Would you like to have a pet? </strong></h3>
     <!-- <h4>Your question here</h4> -->
     <select class="chosen-select" id="q8">
       <option value=""></option>
@@ -126,7 +126,7 @@
       <option value="5">5 (Strongly Agree)</option>
     </select>
 
-    <h3><strong>Question 9</strong></h3>
+    <h3><strong> There is nothing better to eat some fresh vegetables!</strong></h3>
     <!-- <h4>Your question here</h4> -->
     <select class="chosen-select" id="q9">
       <option value=""></option>
@@ -137,7 +137,7 @@
       <option value="5">5 (Strongly Agree)</option>
     </select>
 
-    <h3><strong>Question 10</strong></h3>
+    <h3><strong>Would you like to ride a Bike?</strong></h3>
     <!-- <h4>Your question here</h4> -->
     <select class="chosen-select" id="q10">
       <option value=""></option>
@@ -212,7 +212,7 @@
     // Capture the form inputs (click event when submit button is pushed)
     $("#submit").on("click", function (event) {
       event.preventDefault();
-    });
+   
 
     // Form validation (a function that varifies is all questions have benn answered)
 
@@ -233,52 +233,76 @@
     var userData =
     {
       name: $("#name").val().trim(),
-      photo: $("#pic").val().trim(),
-      scores: answerArray,
+      photo: $("#photo").val().trim(),
+      scores: answerArray
     };
+
     //records the current location (should work after deployment)
 
-
-
-    var currentURL = window.location.origin;
-
+  
+    // var currentURL = window.location.origin;
+    console.log(userData);
+  
     // AJAX post the data to the friends API.
-    $.post({ url: currentURL + "/api/friends", userData, function(data) });
+    $.post("/api/friends", userData, function(data) {
 
+      console.log("yes");
+      
+    });
+  
 
-
-    // Grab the result from the AJAX post so that the best match's name and photo are displayed.
-
-
-
-    $.ajax({ url: currentURL + "/api/friends", method: "GET" }).done(function (res) {
+// Grab the result from the AJAX post so that the best match's name and photo are displayed.
+    $.get("/api/friends", function(res) {  
+      console.log(res);
 
       var perfectMatch = 0;
+      var perfectMatch_img = "";
       var calculationArray = [];
+      var totalsArray = [];
       var currentBest = 100;
       //goes through all possible friends (friendList) without considerer the last one ( user data )
-      for (i = 0; i < res.length - 1; i++) {
+      for (i = 0; i < res.length; i++) {
+        calculationArray = []
         //compares the values from the survey questions and pushes the absolute value of the differences to the difference array
         for (j = 0; j < 10; j++) {
+          
           var currentDifference = userData.scores[j] - res[i].scores[j];
           calculationArray.push(Math.abs(currentDifference));
+          
         }
+        var sum = calculationArray.reduce((a, b) => a + b, 0)
+          totalsArray.push(sum)
+
       }
       // find the perfect match ( lowest number in the array)
+      console.log(totalsArray);
+      takeSmallest(totalsArray);
 
-      function takeSmallest(calculationArray) {
-        var indexOfSmallest = 0
-        var smallestNumber = calculationArray[0]
+      function takeSmallest(totalsArray) {
+        var indexOfSmallest = 0;
+        var smallestNumber =  totalsArray[0];
 
-        for (var i = 0; i < calculationArray.length; i++) {
-          if (calculationArray[i] < smallestNumber) {
-            smallestNumber = calculationArray[i];
+        for (var i = 0; i <  totalsArray.length; i++) {
+          if ( totalsArray[i] < smallestNumber) {
+            smallestNumber =  totalsArray[i];
             indexOfSmallest = i;
+            
           }
         }
-        perfectMatch = res[indexOfSmallest].name;
-        perfectMatch_img = res[indexOfSmallest].pic;
+        
+        
+        var perfectmatchindex = indexOfSmallest ;
+        console.log(perfectmatchindex);
+        
+        perfectMatch = res[perfectmatchindex].name;
+        perfectMatch_img = res[perfectmatchindex].photo;
       }
+     
+
+      console.log(perfectMatch)
+
+      console.log(perfectMatch_img);
+      
       //set up the display for the modal
       var matchName = '<h4>' + perfectMatch + '<h4>';
       // var match-img = '<img width="300px" src=' + perfectMatch_img + '>';
@@ -287,9 +311,13 @@
       $('#friend-modal h4').html(perfectMatch);
       $('.modal-body').html(perfectMatch_img);
       //clear the entries
-      $('#survey')[0].reset();
+      // $('#survey')[0].reset();
     }
     );
+
+  });
+
+
 
   </script>
 
